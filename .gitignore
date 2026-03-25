@@ -1,2 +1,50 @@
 .terrafrom/*
 .terraform.lock.hcl
+
+#-----------------------------------------------
+# Local .terraform directories
+**/.terraform/*
+**/.terraformrc
+
+# Terraform state files (never commit)
+*.tfstate
+*.tfstate.*
+.terraform.tfstate
+
+# Terraform plan files
+*.tfplan
+*.tfplan.json
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Sensitive variable files (keep terraform.tfvars out of git)
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+terraform.tfvars
+override.tf
+*_override.tf
+override.tf.json
+*_override.tf.json
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
