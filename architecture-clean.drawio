@@ -1,0 +1,182 @@
+<mxfile host="app.diagrams.net" version="21.0.0">
+  <diagram name="ECS Sandbox" id="ecs-sandbox-clean">
+    <mxGraphModel dx="1800" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ── TITLE ── -->
+        <mxCell id="title" value="ECS Sandbox — AWS Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=22;fontStyle=1;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="560" y="30" width="800" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             LAYER 1 — INTERNET
+        ══════════════════════════════════════════ -->
+        <mxCell id="internet" value="Internet" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="860" y="80" width="200" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             AWS CLOUD BOUNDARY
+        ══════════════════════════════════════════ -->
+        <mxCell id="aws" value="AWS Cloud — us-east-1" style="swimlane;startSize=30;fillColor=#FAFAFA;strokeColor=#232F3E;strokeWidth=2;fontSize=14;fontStyle=1;fontColor=#232F3E;rounded=1;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="200" y="220" width="1520" height="820" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             VPC BOUNDARY
+        ══════════════════════════════════════════ -->
+        <mxCell id="vpc" value="VPC: demo-ecs-sandbox-vpc  (10.0.0.0/16)" style="swimlane;startSize=30;fillColor=#F5F0FF;strokeColor=#8C4FFF;strokeWidth=2;fontSize=13;fontStyle=1;fontColor=#8C4FFF;rounded=1;arcSize=2;" vertex="1" parent="aws">
+          <mxGeometry x="60" y="60" width="1400" height="730" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             PUBLIC SUBNET A  (left)
+        ══════════════════════════════════════════ -->
+        <mxCell id="pub-a" value="Public Subnet — us-east-1a  (10.0.1.0/24)" style="swimlane;startSize=25;fillColor=#F2F6E8;strokeColor=#7AA116;strokeWidth=1;fontSize=11;fontColor=#7AA116;rounded=1;arcSize=3;" vertex="1" parent="vpc">
+          <mxGeometry x="40" y="70" width="300" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- NAT Gateway inside pub-a -->
+        <mxCell id="natgw-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.nat_gateway;" vertex="1" parent="pub-a">
+          <mxGeometry x="120" y="60" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="natgw-lbl" value="NAT Gateway" style="text;html=1;align=center;fontSize=11;fontStyle=1;" vertex="1" parent="pub-a">
+          <mxGeometry x="95" y="125" width="110" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             PUBLIC SUBNET B  (right)
+        ══════════════════════════════════════════ -->
+        <mxCell id="pub-b" value="Public Subnet — us-east-1b  (10.0.2.0/24)" style="swimlane;startSize=25;fillColor=#F2F6E8;strokeColor=#7AA116;strokeWidth=1;fontSize=11;fontColor=#7AA116;rounded=1;arcSize=3;" vertex="1" parent="vpc">
+          <mxGeometry x="400" y="70" width="300" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- ALB inside pub-b -->
+        <mxCell id="alb-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#8C4FFF;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.application_load_balancer;" vertex="1" parent="pub-b">
+          <mxGeometry x="120" y="50" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="alb-lbl" value="ALB: demo-ecs-sandbox-alb&#xa;Internet-facing | HTTP :80&#xa;SG: alb-sg  (0.0.0.0/0 → :80)" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="pub-b">
+          <mxGeometry x="75" y="115" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             ECS CLUSTER BOUNDARY
+        ══════════════════════════════════════════ -->
+        <mxCell id="cluster" value="ECS Cluster: demo-ecs-sandbox-cluster  (Fargate)" style="swimlane;startSize=28;fillColor=#FDE8F3;strokeColor=#E7157B;strokeWidth=2;fontSize=12;fontStyle=1;fontColor=#E7157B;rounded=1;arcSize=2;" vertex="1" parent="vpc">
+          <mxGeometry x="40" y="320" width="900" height="360" as="geometry" />
+        </mxCell>
+
+        <!-- PRIVATE SUBNET A inside cluster -->
+        <mxCell id="priv-a" value="Private Subnet — us-east-1a  (10.0.11.0/24)" style="swimlane;startSize=25;fillColor=#E6F2F8;strokeColor=#147EBA;strokeWidth=1;fontSize=11;fontColor=#147EBA;rounded=1;arcSize=3;" vertex="1" parent="cluster">
+          <mxGeometry x="40" y="50" width="360" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- Task 1 -->
+        <mxCell id="task1-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#E7157B;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;" vertex="1" parent="priv-a">
+          <mxGeometry x="140" y="60" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="task1-lbl" value="ECS Task 1&#xa;nginx:stable&#xa;256 CPU / 512 MB&#xa;SG: ecs-sg" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="priv-a">
+          <mxGeometry x="105" y="135" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- PRIVATE SUBNET B inside cluster -->
+        <mxCell id="priv-b" value="Private Subnet — us-east-1b  (10.0.12.0/24)" style="swimlane;startSize=25;fillColor=#E6F2F8;strokeColor=#147EBA;strokeWidth=1;fontSize=11;fontColor=#147EBA;rounded=1;arcSize=3;" vertex="1" parent="cluster">
+          <mxGeometry x="500" y="50" width="360" height="270" as="geometry" />
+        </mxCell>
+
+        <!-- Task 2 -->
+        <mxCell id="task2-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#E7157B;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecs;" vertex="1" parent="priv-b">
+          <mxGeometry x="140" y="60" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="task2-lbl" value="ECS Task 2&#xa;nginx:stable&#xa;256 CPU / 512 MB&#xa;SG: ecs-sg" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="priv-b">
+          <mxGeometry x="105" y="135" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             RIGHT COLUMN — IAM / ECR / S3
+        ══════════════════════════════════════════ -->
+
+        <!-- IAM Role -->
+        <mxCell id="iam-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#DD344C;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.role;" vertex="1" parent="vpc">
+          <mxGeometry x="1150" y="120" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="iam-lbl" value="IAM Role&#xa;task-execution-role&#xa;AmazonECSTaskExecutionRolePolicy" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="vpc">
+          <mxGeometry x="1100" y="195" width="170" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ECR -->
+        <mxCell id="ecr-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#E7157B;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.ecr;" vertex="1" parent="vpc">
+          <mxGeometry x="1150" y="340" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ecr-lbl" value="Public ECR&#xa;nginx:stable" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="vpc">
+          <mxGeometry x="1120" y="415" width="130" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- S3 Backend -->
+        <mxCell id="s3-icon" value="" style="outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#3F8624;align=center;html=1;fontSize=11;fontStyle=0;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="vpc">
+          <mxGeometry x="1150" y="560" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-lbl" value="S3 Backend&#xa;ecs-sanbox-vrv&#xa;terraform.tfstate" style="text;html=1;align=center;fontSize=10;" vertex="1" parent="vpc">
+          <mxGeometry x="1110" y="635" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             EDGES
+        ══════════════════════════════════════════ -->
+
+        <!-- Internet → ALB -->
+        <mxCell id="e-inet-alb" value="HTTP :80" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#0070C0;strokeWidth=3;fontColor=#0070C0;fontStyle=1;fontSize=11;rounded=1;" edge="1" source="internet" target="alb-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ALB → Task 1 -->
+        <mxCell id="e-alb-t1" value="port 80" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#8C4FFF;strokeWidth=2;fontColor=#8C4FFF;fontSize=10;rounded=1;" edge="1" source="alb-icon" target="task1-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ALB → Task 2 -->
+        <mxCell id="e-alb-t2" value="port 80" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#8C4FFF;strokeWidth=2;fontColor=#8C4FFF;fontSize=10;rounded=1;" edge="1" source="alb-icon" target="task2-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Task 1 → NAT GW -->
+        <mxCell id="e-t1-nat" value="outbound" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#7AA116;strokeWidth=1;fontColor=#7AA116;fontSize=10;rounded=1;" edge="1" source="task1-icon" target="natgw-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Task 2 → NAT GW -->
+        <mxCell id="e-t2-nat" value="outbound" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#7AA116;strokeWidth=1;fontColor=#7AA116;fontSize=10;rounded=1;" edge="1" source="task2-icon" target="natgw-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- NAT GW → Internet -->
+        <mxCell id="e-nat-inet" value="egress" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#7AA116;strokeWidth=1;fontColor=#7AA116;fontSize=10;rounded=1;" edge="1" source="natgw-icon" target="internet" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- IAM → Task 1 -->
+        <mxCell id="e-iam-t1" value="execution role" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#DD344C;strokeWidth=1;fontColor=#DD344C;fontSize=10;rounded=1;" edge="1" source="iam-icon" target="task1-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- IAM → Task 2 -->
+        <mxCell id="e-iam-t2" value="" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#DD344C;strokeWidth=1;rounded=1;" edge="1" source="iam-icon" target="task2-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ECR → Task 1 -->
+        <mxCell id="e-ecr-t1" value="pull image" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#E7157B;strokeWidth=1;fontColor=#E7157B;fontSize=10;rounded=1;" edge="1" source="ecr-icon" target="task1-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ECR → Task 2 -->
+        <mxCell id="e-ecr-t2" value="" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#E7157B;strokeWidth=1;rounded=1;" edge="1" source="ecr-icon" target="task2-icon" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
